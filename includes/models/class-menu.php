@@ -37,7 +37,7 @@ class Menu {
     /**
      * Format menu data
      */
-    private function format_menu($menu) {
+    public function format_menu($menu) {
         // Get child categories (sections)
         $sections = get_terms([
             'taxonomy' => 'menu_category',

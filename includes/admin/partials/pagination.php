@@ -24,7 +24,7 @@ $current_url = add_query_arg(array_filter([
 ]), admin_url('admin.php?page=menu-manager'));
 ?>
 
-<div class="flex justify-between items-center mt-6 px-6 pb-8">
+<div class="flex justify-between items-center mt-6 pb-8">
     <div class="text-sm text-gray-600">
         <?php 
         printf(
@@ -35,6 +35,8 @@ $current_url = add_query_arg(array_filter([
         );
         ?>
     </div>
+
+    <?php if ($pagination['total_pages'] > 1): ?>
     <div class="flex gap-2">
         <?php if ($pagination['current_page'] > 1): ?>
             <a href="<?php echo esc_url(add_query_arg('paged', $pagination['current_page'] - 1, $current_url)); ?>" 
@@ -79,4 +81,6 @@ $current_url = add_query_arg(array_filter([
             </a>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
+    
 </div>

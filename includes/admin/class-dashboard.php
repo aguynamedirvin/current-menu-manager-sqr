@@ -3,6 +3,8 @@ namespace sqr;
 
 /**
  * Dashboard UI for the Menu Manager
+ * 
+ * includes/admin/clas-dashboard.php
  */
 class Dashboard {
     /**
@@ -10,7 +12,7 @@ class Dashboard {
      */
     private $menu;
     private $editor;
-    private $ajax_handler;
+    private $data_handler;
 
     /**
      * Initialize the dashboard
@@ -22,11 +24,7 @@ class Dashboard {
         
         $this->menu = new Menu();
         $this->editor = new Menu_Item_Editor();
-        $this->ajax_handler = new Ajax_Handler($this->menu);
-
-        // Register AJAX handlers
-        add_action('wp_ajax_get_menu_items', [$this->ajax_handler, 'ajax_get_menu_items']);
-        add_action('wp_ajax_get_menu', [$this->ajax_handler, 'ajax_get_menu']);
+        $this->data_handler = new Data_Handler($this->menu);
     }
 
     /**
@@ -127,28 +125,6 @@ class Dashboard {
         ]);
     }
 
-    /**
-     * Get all menu locations
-     */
-    private function get_locations() {
-        $terms = get_terms([
-            'taxonomy' => 'location',
-            'hide_empty' => false,
-        ]);
-
-        if (is_wp_error($terms)) {
-            return [];
-        }
-
-        return $terms;
-    }
-
-    /**
-     * Get all menus
-     */
-    private function get_menus() {
-        return $this->menu->get_menus();
-    }
 
     /**
      * Render the dashboard page
@@ -160,13 +136,27 @@ class Dashboard {
             return;
         }
 
+        // Check if we have filters set
+        $filters = [];
+        $filters['paged'] = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
+        $filters['items_per_page'] = isset($_GET['items_per_page']) ? intval($_GET['items_per_page']) : 15;
+        if (isset($_GET['location'])) {
+            $filters['location'] = sanitize_text_field($_GET['location']);
+        }
+        if (isset($_GET['menu'])) {
+            $filters['menu'] = sanitize_text_field($_GET['menu']);
+        }
+        if (isset($_GET['section'])) {
+            $filters['section'] = sanitize_text_field($_GET['section']);
+        }
+
         // Get all required data
-        $locations = $this->ajax_handler->get_locations();
-        $menus = $this->menu->get_menus();
-        $menu_items = $this->ajax_handler->get_menu_items();
-        $pagination = $this->ajax_handler->get_pagination_data();
+        $locations = $this->data_handler->get_locations();
+        $menus = $this->data_handler->fetch_menus();
+        $menu_items = $this->data_handler->fetch_menu_items($filters, $filters['items_per_page'], $filters['paged']);
+        $pagination = $this->data_handler->get_pagination_data();
 
         // Include the template
-        include __DIR__ . '/templates/main.php';
+        include __DIR__ . '/views/main.php';
     }
 }

@@ -21,7 +21,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/models/menu-item.php';
 require_once plugin_dir_path(__FILE__) . 'includes/models/class-menu.php';
 
 // AJAX Handler
-require_once plugin_dir_path(__FILE__) . 'includes/ajax/class-ajax-handler.php';
+require_once plugin_dir_path(__FILE__) . 'includes/data/class-data-handler.php';
 
 // Include core files
 require_once __DIR__ . '/includes/models/menu-item.php';
@@ -58,16 +58,16 @@ class TheMenuManager {
     private function __construct() {
         $this->menu_item = new MenuItem();
         $menu = new Menu();
-        $ajax_handler = new Ajax_Handler($menu);
-        $this->dashboard = new Dashboard($menu, $ajax_handler);
+        $data_handler = new Data_Handler($menu);
+        $this->dashboard = new Dashboard($menu, $data_handler);
         $this->dev = new Dev();
 
         // Register post types and taxonomies on init
         add_action('init', [$this, 'register_post_types_and_taxonomies']);
 
         // Add meta boxes
-        add_action('add_meta_boxes', [$this->menu_item, 'add_meta_boxes']);
-        add_action('save_post_menu_item', [$this->menu_item, 'save_meta_box']);
+        add_action('add_meta_boxes', [$this->menu_item, 'add_menu_item_meta_boxes']);
+        add_action('save_post_menu_item', [$this->menu_item, 'save_menu_item_meta_box']);
     }
 
     /**

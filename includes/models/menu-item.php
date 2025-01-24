@@ -3,6 +3,9 @@ namespace sqr;
 
 /**
  * Menu Item Registration and Management
+ * Handles the registration and management of the menu item custom post type
+ * 
+ * includes/models/menu-item.php
  */
 class MenuItem {
     /**
@@ -145,11 +148,11 @@ class MenuItem {
     /**
      * Add meta boxes to the menu item post type
      */
-    public function add_meta_boxes() {
+    public function add_menu_item_meta_boxes() {
         add_meta_box(
             'menu_item_details',
             'Menu Item Details',
-            [$this, 'render_meta_box'],
+            [$this, 'render_menu_item_meta_box'],
             'menu_item',
             'normal',
             'high'
@@ -157,9 +160,9 @@ class MenuItem {
     }
 
     /**
-     * Render the meta box
+     * Render menu item meta boxes
      */
-    public function render_meta_box($post) {
+    public function render_menu_item_meta_box($post) {
         // Add nonce for security
         wp_nonce_field('menu_item_meta_box', 'menu_item_meta_box_nonce');
 
@@ -222,7 +225,7 @@ class MenuItem {
     /**
      * Save the meta box data
      */
-    public function save_meta_box($post_id) {
+    public function save_menu_item_meta_box($post_id) {
         // Security checks
         if (!isset($_POST['menu_item_meta_box_nonce'])) {
             return;

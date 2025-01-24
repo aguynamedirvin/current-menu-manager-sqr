@@ -3,6 +3,9 @@ namespace sqr;
 
 /**
  * Menu Item Editor class
+ * Handles the menu item editor page
+ * 
+ * includes/admin/class-menu-item.php
  */
 class Menu_Item_Editor {
     /**
@@ -59,7 +62,7 @@ class Menu_Item_Editor {
         ]);
 
         // Load editor template
-        include __DIR__ . '/templates/edit-item.php';
+        include __DIR__ . '/views/edit-item.php';
     }
 
     /**
